@@ -17,12 +17,13 @@ enum StatusTravelOrderEnum: int
         };
     }
 
-    public static function getNameById(int $id): string
+    public static function getNameById(int $id): ?string
     {
         return match ($id) {
             self::PENDING->value => 'pending',
             self::ACCEPTED->value => 'accepted',
             self::CANCELED->value => 'canceled',
+            default => null,
         };
     }
 }

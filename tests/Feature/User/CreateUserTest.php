@@ -10,7 +10,7 @@ use Tests\TestCase;
 class CreateUserTest extends TestCase
 {
     /* @var string */
-    private const ENDPOINT = 'api/register';
+    private const ENDPOINT = 'api/auth/register';
 
     public function test_can_create_user_successfully(): void
     {

@@ -6,15 +6,16 @@ use App\DTOs\TravelOrderDTO;
 use App\Enum\StatusTravelOrderEnum;
 use App\Exceptions\TravelOrder\CannotBeCanceledAfterDepartureDateException;
 use App\Exceptions\TravelOrder\CannotUpdateSelfTravelOrderException;
-use App\Exceptions\TravelOrder\TravelOrderNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TravelOrder\AcceptStatusTravelOrderRequest;
 use App\Http\Requests\TravelOrder\CancelStatusTravelOrderRequest;
+use App\Http\Requests\TravelOrder\GetAllTravelOrderRequest;
 use App\Http\Requests\TravelOrder\StoreTravelOrderRequest;
 use App\Http\Resources\TravelOrder\TravelOrderResource;
 use App\Interfaces\Services\TravelOrderServiceInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class TravelOrderController extends Controller
@@ -23,9 +24,14 @@ class TravelOrderController extends Controller
     {
     }
 
-    public function index()
+    public function index(GetAllTravelOrderRequest $request): AnonymousResourceCollection | JsonResponse
     {
-        //
+        try {
+            $data = $this->travelOrderService->getAll($request->validated());
+            return TravelOrderResource::collection($data);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => 'Internal Server Error!'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function store(StoreTravelOrderRequest $request): TravelOrderResource | JsonResponse

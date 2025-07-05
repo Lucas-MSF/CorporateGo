@@ -13,13 +13,13 @@ class FindTravelOrderTest extends TestCase
 {
     /* @var string */
     private const ENDPOINT = '/api/travel-orders/';
-//
+
     public function test_can_find_travel_order_successfully(): void
     {
         $user = User::factory()->create();
-        $travelOrder = TravelOrder::factory([
+        $travelOrder = TravelOrder::factory()->create([
             'requestor_id' => $user->id,
-        ])->create();
+        ]);
 
         $response = $this->withToken($this->createTokenByUser($user))
             ->getJson(self::ENDPOINT . $travelOrder->id);

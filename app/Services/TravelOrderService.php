@@ -10,6 +10,8 @@ use App\Exceptions\TravelOrder\CannotUpdateSelfTravelOrderException;
 use App\Interfaces\Repositories\TravelOrderRepositoryInterface;
 use App\Interfaces\Services\TravelOrderServiceInterface;
 use App\Models\TravelOrder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Carbon;
 
 class TravelOrderService implements TravelOrderServiceInterface
@@ -57,5 +59,10 @@ class TravelOrderService implements TravelOrderServiceInterface
     public function findById(int $travelOrderId): TravelOrder
     {
         return $this->travelOrderRepository->findById($travelOrderId);
+    }
+
+    public function getAll(array $filters): Collection
+    {
+        return $this->travelOrderRepository->getAll($filters);
     }
 }
