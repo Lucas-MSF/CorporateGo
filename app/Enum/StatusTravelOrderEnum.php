@@ -8,6 +8,15 @@ enum StatusTravelOrderEnum: int
     case ACCEPTED = 2;
     case CANCELED = 3;
 
+    public function label(): string
+    {
+        return match ($this) {
+            self::PENDING => 'pending',
+            self::ACCEPTED => 'accepted',
+            self::CANCELED => 'canceled',
+        };
+    }
+
     public static function getNameById(int $id): string
     {
         return match ($id) {

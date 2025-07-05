@@ -10,4 +10,6 @@ interface TravelOrderServiceInterface
     public function create(TravelOrderDTO $dto): TravelOrder;
 
     public function updateStatus(int $travelOrderId, string $status): void;
+
+    public function findById(int $travelOrderId): TravelOrder;
 }

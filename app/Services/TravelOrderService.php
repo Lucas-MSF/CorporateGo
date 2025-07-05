@@ -3,10 +3,14 @@
 namespace App\Services;
 
 use App\DTOs\TravelOrderDTO;
+use App\Enum\StatusTravelOrderEnum;
+use App\Events\TravelOrder\TravelOrderStatusChangedEvent;
+use App\Exceptions\TravelOrder\CannotBeCanceledAfterDepartureDateException;
 use App\Exceptions\TravelOrder\CannotUpdateSelfTravelOrderException;
 use App\Interfaces\Repositories\TravelOrderRepositoryInterface;
 use App\Interfaces\Services\TravelOrderServiceInterface;
 use App\Models\TravelOrder;
+use Illuminate\Support\Carbon;
 
 class TravelOrderService implements TravelOrderServiceInterface
 {
@@ -21,16 +25,37 @@ class TravelOrderService implements TravelOrderServiceInterface
 
     public function updateStatus(int $travelOrderId, string $status): void
     {
-        $this->checkUserIdAndRequestorId($travelOrderId);
+        $travelOrder = $this->getTravelOrder($travelOrderId);
+        $this->checkUserIdAndRequestorId($travelOrder);
+        $this->checkCanBeCancelled($travelOrder, $status);
         $this->travelOrderRepository->updateStatus($travelOrderId, $status);
+        event(new TravelOrderStatusChangedEvent($travelOrder->fresh()));
     }
 
-    private function checkUserIdAndRequestorId(int $travelOderId): void
+    private function getTravelOrder(int $travelOrderId): TravelOrder
     {
-        $travelOrder = $this->travelOrderRepository->findById($travelOderId);
+        return $this->travelOrderRepository->finByIdWithoutScopes($travelOrderId);
+    }
+
+    private function checkUserIdAndRequestorId(TravelOrder $travelOrder): void
+    {
         throw_if(
             $travelOrder->requestor_id === auth()->id(),
             CannotUpdateSelfTravelOrderException::class
         );
+    }
+
+    private function checkCanBeCancelled(TravelOrder $travelOrder, string $status): void
+    {
+        throw_if(
+            $status === StatusTravelOrderEnum::CANCELED->label() &&
+            Carbon::parse($travelOrder->departure_date)->lt(Carbon::today()),
+            CannotBeCanceledAfterDepartureDateException::class
+        );
+    }
+
+    public function findById(int $travelOrderId): TravelOrder
+    {
+        return $this->travelOrderRepository->findById($travelOrderId);
     }
 }

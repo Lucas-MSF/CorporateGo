@@ -10,5 +10,7 @@ interface TravelOrderRepositoryInterface
 
     public function updateStatus(int $travelOrderId, string $status): void;
 
+    public function finByIdWithoutScopes(int $travelOrderId): TravelOrder;
+
     public function findById(int $travelOrderId): TravelOrder;
 }

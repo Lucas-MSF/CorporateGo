@@ -18,11 +18,16 @@ class TravelOrderRepository implements TravelOrderRepositoryInterface
 
     public function updateStatus(int $travelOrderId, string $status): void
     {
-        $this->model->where('id', $travelOrderId)->update(['status' => $status]);
+        $this->model->newQueryWithoutScopes()->where('id', $travelOrderId)->update(['status' => $status]);
+    }
+
+    public function finByIdWithoutScopes(int $travelOrderId): TravelOrder
+    {
+        return $this->model->newQueryWithoutScopes()->find($travelOrderId);
     }
 
     public function findById(int $travelOrderId): TravelOrder
     {
-        return $this->model->find($travelOrderId);
+        return $this->model->query()->findOrFail($travelOrderId);
     }
 }
