@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Unit\Notification;
+namespace Tests\Unit\Notification\TravelOrder;
 
 use App\Models\TravelOrder;
 use App\Notifications\TravelOrder\TravelOrderStatusChangeNotification;
 use Tests\TestCase;
 
-class NotificationTest extends TestCase
+class NotificationTravelOrderStatusChangedTest extends TestCase
 {
     public function test_travel_order_notification_renders_correct_email(): void
     {
