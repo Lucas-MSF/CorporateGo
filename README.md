@@ -84,6 +84,7 @@ Crie o arquivo de banco para testes no caminho `database/` com o nome:
 ```
 ## ✅ Teste Coverage
 <img src="public/img/coverage.png" width="500" />
+
 ---
 
 ## 🤝 Contribuindo
